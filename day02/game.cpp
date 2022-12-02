@@ -37,6 +37,26 @@ gp getCodedScore(string line) {
             gameplay.mymove = 3;
             break;
     }
+    return gameplay;
+}
+
+int calculateScore(string fileText) {
+    gp gamePlay = getCodedScore(fileText);
+    if(gamePlay.mymove == gamePlay.elfmove) {
+        return gamePlay.mymove + 3;
+    }
+    else if(gamePlay.elfmove == 3 && gamePlay.mymove == 1) {
+        return gamePlay.mymove + 6;
+    }
+    else if(gamePlay.elfmove == 1 && gamePlay.mymove == 3) {
+        return gamePlay.mymove;
+    }
+    else if(gamePlay.mymove > gamePlay.elfmove) {
+        return gamePlay.mymove + 6;
+    }
+    else {
+        return gamePlay.mymove;
+    }
 }
 
 int main(int argc, char *argv[]) {
@@ -48,4 +68,7 @@ int main(int argc, char *argv[]) {
             myScore+=calculateScore(fileText);
         }
     }
+    cout << "The answer is:";
+    cout << myScore;
+    cout << "\n";
 }
