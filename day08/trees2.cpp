@@ -9,38 +9,33 @@ int locateTree(int* treeAry, int posx, int posy) {
     return treeAry[99*posx+posy];
 }
 
-bool checkDirection(int* treeAry, int posx, int posy, int dirx, int diry) {
+int checkDirection(int* treeAry, int posx, int posy, int dirx, int diry) {
     int prev = locateTree(treeAry, posx, posy);
+    int cnt = 0;
     while(posx!=0 && posx!=99-1 && posy!=0 && posy!=99-1) {
         posx+=dirx;
         posy+=diry;
         int newt = locateTree(treeAry, posx, posy);
         if(newt>=prev) {
-            return false;
+            return cnt+1;
         }
+        cnt+=1;
     }
-    return true;
+    return cnt;
 }
 
-bool checkSurrounding(int* treeAry, int posx, int posy) {
+int checkSurrounding(int* treeAry, int posx, int posy) {
     int currentTree = locateTree(treeAry,posx,posy);
     // cout << currentTree;
     if(posx==0 || posx==99-1 || posy==0 || posy==99-1) {
-        return true;
+        return 0;
     }
-    if(checkDirection(treeAry,posx,posy,1,0)) {
-        return true;
-    }
-    if(checkDirection(treeAry,posx,posy,-1,0)) {
-        return true;
-    }
-    if(checkDirection(treeAry,posx,posy,0,1)) {
-        return true;
-    }
-    if(checkDirection(treeAry,posx,posy,0,-1)) {
-        return true;
-    }
-    return false;
+    int startingScore = 1;
+    startingScore*=checkDirection(treeAry,posx,posy,1,0);
+    startingScore*=checkDirection(treeAry,posx,posy,-1,0);
+    startingScore*=checkDirection(treeAry,posx,posy,0,1);
+    startingScore*=checkDirection(treeAry,posx,posy,0,-1);
+    return startingScore;
 }
 
 int main(int argc, char *argv[]) {
@@ -56,17 +51,18 @@ int main(int argc, char *argv[]) {
         cnt+=1;
     }
     int ans = 0;
+    int max = 0;
     for(int i = 0;i<99;i++) {
         for(int ii = 0;ii<99;ii++) {
-            bool rslt = checkSurrounding(*treeAry,i,ii);
-            if(rslt) {
-                ans+=1;
+            int rslt = checkSurrounding(*treeAry,i,ii);
+            if(rslt>max) {
+                max = rslt;
             }
-            cout << "(" << treeAry[i][ii] << "," << (rslt ? "+" : "-") << ")";
+            cout << "(" << treeAry[i][ii] << "," << rslt << ")";
         }
         cout << "\n";
     }
     cout << "Answer:";
-    cout << ans;
+    cout << max;
     cout << "\n";
 }
