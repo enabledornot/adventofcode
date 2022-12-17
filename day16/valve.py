@@ -91,13 +91,13 @@ class maxValueCached:
         cacheKey = str([opened, current, timeLeft])
         if cacheKey not in self.cache:
             self.cache[cacheKey] = self.maxValue(opened,current, timeLeft)
-        if len(self.cache)%1000 == 0:
-            print(len(self.cache))
+        # if len(self.cache)%1000 == 0:
+        #     print(len(self.cache))
         return self.cache[cacheKey]
 
 
 mapped = getMap("input.txt")
 mvc = maxValueCached(mapped)
 print(mapped)
-rslt = mvc.maxValue((), 0, 30)
+rslt = mvc.maxValueCached((), 0, 30)
 print(rslt)
