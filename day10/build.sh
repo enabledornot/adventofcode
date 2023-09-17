@@ -1,0 +1,1 @@
+g++ cathode.cpp -std=c++20
