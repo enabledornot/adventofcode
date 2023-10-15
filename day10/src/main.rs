@@ -10,7 +10,7 @@ fn main() -> Result<(), std::io::Error> {
     let read = BufReader::new(file);
 
     let mut c = CPU::new(vec![20,60,100,140,180,220]);
-
+    println!("Part 2 answer:");
     for str in read.lines() {
         c.exec(&str?);
     }

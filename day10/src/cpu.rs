@@ -34,8 +34,19 @@ impl CPU {
     }
     fn cycle(&mut self) {
         self.clock+=1;
+        // Part 1 code
         if self.print_list.contains(&self.clock) {
             self.cycle_count+=self.x*self.clock;
+        }
+        // Part 2 code
+        if (self.clock%40-(self.x+1)).abs() < 2 {
+            print!("█");
+        }
+        else {
+            print!(" ");
+        }
+        if self.clock%40 == 0 {
+            println!("");
         }
     }
 }
