@@ -58,7 +58,7 @@ def findMinLengthdpad(code, depth=25):
         validMoves = validateMoves(p,potentialMoves,pos=(0,0))
         if len(validMoves) == 0:
             import ipdb; ipdb.set_trace()
-        cheapestMove = 10000000000000000000000000000000000000000
+        cheapestMove = float('inf')
         for validMove in validMoves:
             current = findMinLengthdpad(validMove + "A",depth=depth-1)
             if current < cheapestMove:
@@ -88,7 +88,7 @@ def findMinLength(code):
             requiredMoves += 'v'
         potentialMoves = findAllOrderings(requiredMoves)
         validMoves = validateMoves(p,potentialMoves)
-        cheapestMove = 10000000000000000000000000000000000000000000000000000000000000000000000000000
+        cheapestMove = float('inf')
         for validMove in validMoves:
             current = findMinLengthdpad(validMove + 'A')
             if current < cheapestMove:
