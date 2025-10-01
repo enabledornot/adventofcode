@@ -54,25 +54,28 @@ class CircutVirtual:
         if variable not in self.g:
             return None
         oa, op, ob = self.g[variable]
-        result = (self.find(oa), op, self.find(ob))
-        self.v[variable] = result
         if variable not in self.seen:
             self.seen.add(variable)
-            self.log.append((result,variable))
+            self.log.append(((oa,op,ob),variable))
+        result = (self.find(oa), op, self.find(ob))
+        self.v[variable] = result
         return variable
     def evaluate(self):
         for cnt in range(500):
             current = self.find(f'z{cnt:02d}')
             if current == None:
                 break
-    def dump(self,filename='output.txt'):
+    def dump(self,filename='output.txt',doLabels=True):
         outfile = ""
         for line in self.log:
             operation, result = line
             oa, op, ob = operation
             if result[0] == 'z':
                 outfile += '\n'
-            outfile+= f"{self.r.get(oa,oa)} {op} {self.r.get(ob,ob)} -> {self.r.get(result,result)}\n"
+            if doLabels:
+                outfile+= f"{self.r.get(oa,oa)} {op} {self.r.get(ob,ob)} -> {self.r.get(result,result)}\n"
+            else:
+                outfile+= f"{oa} {op} {ob} -> {result}\n"
         with open(filename,'w') as f:
             f.write(outfile)
     def renameVariables(self):
@@ -130,11 +133,9 @@ class CircutVirtual:
     def validate(self,term):
         result = self.renameSearch(term[0])
         if result == None:
-            # print("NO TERM FOUND ERROR")
-            if term[0][0][0] not in ['x','y']:
-                self.suspect.add(term[0][0])
-            if term[0][2][0] not in ['x','y']:
-                self.suspect.add(term[0][2])
+            print("NO TERM FOUND ERROR")
+            self.suspect.add(term[0][0])
+            self.suspect.add(term[0][2])
             self.w.add(term[1])
             return False
         # if result[0] == 'z':
@@ -164,26 +165,32 @@ class CircutVirtual:
         return liste
     def check(self):
         opening = [
-            (('x00','XOR','y00'),'f00'),
-            (('x01','XOR','y01'),'a00'),
-            (('x00','AND','y00'),'d00')
+            (('x00','XOR','y00'),'zzz_00'),
+            (('x01','XOR','y01'),'base_00'),
+            (('x00','AND','y00'),'carry_00')
         ]
         for openi in opening:
             if not self.validate(openi):
                 break
         # print(c.r)
         errorBlocks = []
-        for n in range(0,44):
+        for n in range(0,45):
             nextBlock = [
-                ((f'a{n:02d}','XOR',f'd{n:02d}'),f'f{(n+1):02d}'),
-                ((f'x{(n+2):02d}','XOR',f'y{(n+2):02d}'),f'a{(n+1):02d}'),
+                ((f'base_{n:02d}','XOR',f'carry_{n:02d}'),f'zzz_{(n+1):02d}'),
+                ((f'x{(n+2):02d}','XOR',f'y{(n+2):02d}'),f'base_{(n+1):02d}'),
                 ((f'x{(n+1):02d}','AND',f'y{(n+1):02d}'),f'b{(n+1):02d}'),
-                ((f'a{n:02d}','AND',f'd{n:02d}'),f'c{(n+1):02d}'),
-                ((f'b{(n+1):02d}','OR',f'c{(n+1):02d}'),f'd{(n+1):02d}')
+                ((f'base_{n:02d}','AND',f'carry_{n:02d}'),f'dcarry_{(n+1):02d}'),
+                ((f'b{(n+1):02d}','OR',f'dcarry_{(n+1):02d}'),f'carry_{(n+1):02d}')
             ]
             if n == 43:
                 nextBlock.pop(4)
                 nextBlock.pop(1)
+            if n == 44:
+                nextBlock.pop(0)
+                nextBlock.pop(0)
+                nextBlock.pop(0)
+                nextBlock.pop(0)
+                print(nextBlock)
             for block in nextBlock:
                 if not self.validate(block):
                     errorBlocks.append(block)
@@ -206,6 +213,7 @@ print(suspects)
 print(eb)
 c.evaluate()
 c.dump('output2.txt')
+c.dump('output3.txt',doLabels=False)
 # print(c.findBadGates())
 print(suspects)
 print(c.findBadGates())
