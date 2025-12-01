@@ -11,14 +11,20 @@ for line in parse():
     if int(line[1:]) == 0:
         continue
     if line[0] == "R":
-        pos += int(line[1:])
+        npos = int(line[1:])
     elif line[0] == "L":
-        pos -= int(line[1:])
+        npos = - int(line[1:])
     else:
         print('err')
-    pos = pos % 100
-    if pos == 0:
-        cnt += 1
-    
+    while npos < 0:
+        pos = (pos - 1 ) % 100
+        npos += 1
+        if pos == 0:
+            cnt += 1
+    while npos > 0:
+        pos = (pos + 1) % 100
+        npos -= 1
+        if pos == 0:
+            cnt += 1
     
 print(cnt)
