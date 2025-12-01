@@ -5,7 +5,6 @@ def parse():
 pos = 50
 cnt = 0
 for line in parse():
-    # print(f"{pos}-{cnt}")
     if len(line) < 1:
         continue
     if int(line[1:]) == 0:
@@ -16,8 +15,6 @@ for line in parse():
         npos = - int(line[1:])
     else:
         print('err')
-    # print(npos)
-    # print("")
     cnt += abs(npos) // 100
     if npos < 0:
         npos = (-1*npos) % 100
